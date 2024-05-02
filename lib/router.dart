@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:messenger_app/common/error.dart';
 import 'package:messenger_app/features/landing/screens/auth/screens/login_screen.dart';
 import 'package:messenger_app/features/landing/screens/auth/screens/otp_screen.dart';
+import 'package:messenger_app/features/landing/screens/auth/screens/user_information.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
@@ -13,6 +14,11 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       final verificationId = settings.arguments as String;
       return MaterialPageRoute(
         builder: (context) => OTPScreen(verificationId: verificationId),
+      );
+
+    case UserInformation.routeName:
+      return MaterialPageRoute(
+        builder: (context) => const UserInformation(),
       );
 
     default:

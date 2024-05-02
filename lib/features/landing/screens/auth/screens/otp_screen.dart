@@ -1,7 +1,9 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:messenger_app/features/landing/screens/auth/controller/auth_controller.dart';
+import 'package:messenger_app/widgets/colors.dart';
 
-class OTPScreen extends StatefulWidget {
+class OTPScreen extends ConsumerWidget {
   static const String routeName = '/otp-screen';
   final String verificationId;
 
@@ -9,13 +11,48 @@ class OTPScreen extends StatefulWidget {
     super.key,
     required this.verificationId,
   });
-  @override
-  State<OTPScreen> createState() => _OTPScreenState();
-}
 
-class _OTPScreenState extends State<OTPScreen> {
+  void verifyOTP(WidgetRef ref, BuildContext context, userOTP) {
+    ref.read(authControllerProvider).verifyOTP(
+          context,
+          verificationId,
+          userOTP,
+        );
+  }
+
   @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final size = MediaQuery.of(context).size;
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Nhập mã xác minh của bạn'),
+        elevation: 0,
+        backgroundColor: backgroundColor,
+      ),
+      body: Center(
+        child: Column(
+          children: [
+            const SizedBox(height: 20),
+            const Text('Mã xác thực của bạn là.'),
+            SizedBox(
+              width: size.width * 0.5,
+              child: TextField(
+                textAlign: TextAlign.center,
+                decoration: const InputDecoration(
+                  hintText: '- - - - - -',
+                  hintStyle: TextStyle(fontSize: 30),
+                ),
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  if (value.length == 6) {
+                    verifyOTP(ref, context, value.trim());
+                  }
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

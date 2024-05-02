@@ -47,6 +47,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       ref
           .read(authControllerProvider)
           .signInWithPhone(context, '+${country!.phoneCode}$phoneNumber');
+      print('+${country!.phoneCode}$phoneNumber');
     } else {
       showSnackBar(
           context: context, content: 'Vui lòng nhập nhập đầy đủ thông tin');
