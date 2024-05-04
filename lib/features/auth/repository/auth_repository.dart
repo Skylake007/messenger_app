@@ -3,13 +3,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:messenger_app/common/utils/repositories/common_firebase_storage_repository.dart';
+import 'package:messenger_app/common/repositories/common_firebase_storage_repository.dart';
 import 'package:messenger_app/common/utils/utils.dart';
-import 'package:messenger_app/features/landing/screens/auth/screens/otp_screen.dart';
-import 'package:messenger_app/features/landing/screens/auth/screens/user_information_screen.dart';
+import 'package:messenger_app/features/auth/screens/otp_screen.dart';
+import 'package:messenger_app/features/auth/screens/user_information_screen.dart';
 import 'package:messenger_app/info.dart';
 import 'package:messenger_app/models/user_model.dart';
-import 'package:messenger_app/screens/mobile_chat_screen.dart';
+import 'package:messenger_app/screens/mobile_layout_screen.dart';
 
 final authRepositoryProvider = Provider(
   (ref) => AuthRepository(
@@ -25,6 +25,16 @@ class AuthRepository {
     required this.auth,
     required this.firestore,
   });
+
+  Future<UserModel?> getCurrentUserData() async {
+    var userData =
+        await firestore.collection('users').doc(auth.currentUser?.uid).get();
+    UserModel? user;
+    if (userData.data() != null) {
+      user = UserModel.fromMap(userData.data()!);
+    }
+    return user;
+  }
 
   void signWithPhone(BuildContext context, phoneNumber) async {
     try {
@@ -105,11 +115,12 @@ class AuthRepository {
       );
 
       await firestore.collection('users').doc(uid).set(user.toMap());
-
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => const MobileChatScreen()),
-          (route) => false);
+      if (context.mounted) {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const MobileLayoutScreen()),
+            (route) => false);
+      }
     } catch (e) {
       if (context.mounted) {
         showSnackBar(context: context, content: 'Lỗi: ${e.toString()}');

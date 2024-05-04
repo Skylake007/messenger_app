@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:messenger_app/common/custom_button.dart';
-import 'package:messenger_app/features/landing/screens/auth/screens/login_screen.dart';
+import 'package:messenger_app/features/auth/screens/login_screen.dart';
 import 'package:messenger_app/widgets/colors.dart';
 
 class LandingScreen extends StatelessWidget {

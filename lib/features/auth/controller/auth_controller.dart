@@ -1,12 +1,18 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:messenger_app/features/landing/screens/auth/repository/auth_repository.dart';
+import 'package:messenger_app/features/auth/repository/auth_repository.dart';
+import 'package:messenger_app/models/user_model.dart';
 
 final authControllerProvider = Provider((ref) {
   final authRepository = ref.watch(authRepositoryProvider);
   //ref.watch = Provider.of<Repository>(context);
   return AuthController(authRepository: authRepository, ref: ref);
+});
+
+final userDataAuthProvider = FutureProvider((ref) {
+  final authController = ref.watch(authControllerProvider);
+  return authController.getUserData();
 });
 
 class AuthController {
@@ -16,6 +22,11 @@ class AuthController {
     required this.authRepository,
     required this.ref,
   });
+
+  Future<UserModel?> getUserData() async {
+    UserModel? user = await authRepository.getCurrentUserData();
+    return user;
+  }
 
   void signInWithPhone(BuildContext context, String phoneNumber) {
     authRepository.signWithPhone(context, phoneNumber);

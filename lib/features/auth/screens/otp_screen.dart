@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:messenger_app/features/landing/screens/auth/controller/auth_controller.dart';
+import 'package:messenger_app/features/auth/controller/auth_controller.dart';
 import 'package:messenger_app/widgets/colors.dart';
 
 class OTPScreen extends ConsumerWidget {
