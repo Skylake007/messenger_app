@@ -1,26 +1,29 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first, use_build_context_synchronously
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:messenger_app/common/utils/repositories/common_firebase_storage_repository.dart';
 import 'package:messenger_app/common/utils/utils.dart';
 import 'package:messenger_app/features/landing/screens/auth/screens/otp_screen.dart';
-import 'package:messenger_app/features/landing/screens/auth/screens/user_information.dart';
+import 'package:messenger_app/features/landing/screens/auth/screens/user_information_screen.dart';
+import 'package:messenger_app/info.dart';
+import 'package:messenger_app/models/user_model.dart';
+import 'package:messenger_app/screens/mobile_chat_screen.dart';
 
 final authRepositoryProvider = Provider(
   (ref) => AuthRepository(
     auth: FirebaseAuth.instance,
-    firebaseFirestore: FirebaseFirestore.instance,
+    firestore: FirebaseFirestore.instance,
   ),
 );
 
 class AuthRepository {
   final FirebaseAuth auth;
-  final FirebaseFirestore firebaseFirestore;
+  final FirebaseFirestore firestore;
   AuthRepository({
     required this.auth,
-    required this.firebaseFirestore,
+    required this.firestore,
   });
 
   void signWithPhone(BuildContext context, phoneNumber) async {
@@ -42,7 +45,9 @@ class AuthRepository {
             // handle for timeout
           });
     } on FirebaseAuthException catch (e) {
-      showSnackBar(context: context, content: e.message!);
+      if (context.mounted) {
+        showSnackBar(context: context, content: e.message!);
+      }
     }
   }
 
@@ -57,13 +62,58 @@ class AuthRepository {
         smsCode: userOTP,
       );
       await auth.signInWithCredential(credential);
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        UserInformation.routeName,
-        (route) => false,
-      );
+      if (context.mounted) {
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          UserInformationScreen.routeName,
+          (route) => false,
+        );
+      }
     } on FirebaseAuthException catch (e) {
-      showSnackBar(context: context, content: e.message!);
+      if (context.mounted) {
+        showSnackBar(context: context, content: e.message!);
+      }
+    }
+  }
+
+  void saveUserDataToFirebase({
+    required String name,
+    required File? profilePic,
+    required ProviderRef ref,
+    required BuildContext context,
+  }) async {
+    try {
+      String uid = auth.currentUser!.uid;
+      String photoUrl = avatar;
+
+      if (profilePic != null) {
+        photoUrl = await ref
+            .read(commonFirebaseStorageRepositoryProvider)
+            .storeFileToFirebase(
+              'profilePic/$uid',
+              profilePic,
+            );
+      }
+
+      var user = UserModel(
+        name: name,
+        uid: uid,
+        profilePic: photoUrl,
+        isOnline: true,
+        phoneNumber: auth.currentUser!.uid,
+        groupId: [],
+      );
+
+      await firestore.collection('users').doc(uid).set(user.toMap());
+
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const MobileChatScreen()),
+          (route) => false);
+    } catch (e) {
+      if (context.mounted) {
+        showSnackBar(context: context, content: 'Lỗi: ${e.toString()}');
+      }
     }
   }
 }

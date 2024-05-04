@@ -29,28 +29,30 @@ class OTPScreen extends ConsumerWidget {
         elevation: 0,
         backgroundColor: backgroundColor,
       ),
-      body: Center(
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            const Text('Mã xác thực của bạn là.'),
-            SizedBox(
-              width: size.width * 0.5,
-              child: TextField(
-                textAlign: TextAlign.center,
-                decoration: const InputDecoration(
-                  hintText: '- - - - - -',
-                  hintStyle: TextStyle(fontSize: 30),
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            children: [
+              const SizedBox(height: 20),
+              const Text('Mã xác thực của bạn là.'),
+              SizedBox(
+                width: size.width * 0.5,
+                child: TextField(
+                  textAlign: TextAlign.center,
+                  decoration: const InputDecoration(
+                    hintText: '- - - - - -',
+                    hintStyle: TextStyle(fontSize: 30),
+                  ),
+                  keyboardType: TextInputType.number,
+                  onChanged: (value) {
+                    if (value.length == 6) {
+                      verifyOTP(ref, context, value.trim());
+                    }
+                  },
                 ),
-                keyboardType: TextInputType.number,
-                onChanged: (value) {
-                  if (value.length == 6) {
-                    verifyOTP(ref, context, value.trim());
-                  }
-                },
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
