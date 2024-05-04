@@ -51,5 +51,7 @@
 	<string>Cho phép chúng tôi sử dụng camera của bạn.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Cho phép chúng tôi sử dụng microphone của bạn.</string>
+	<key>NSContactsUsageDescription</key>
+    <string>Cho phép chúng tôi truy cập danh bạ của bạn.</string>
 </dict>
 </plist>

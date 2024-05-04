@@ -43,6 +43,7 @@ dependencies:
   change_app_package_name: ^1.1.0
   image_picker: ^1.1.1
   firebase_storage: ^11.7.4
+  flutter_contacts: ^1.1.7+1
 
 dev_dependencies:
   flutter_test:
