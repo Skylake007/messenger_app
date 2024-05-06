@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:messenger_app/models/user_model.dart';
 import 'package:messenger_app/screens/mobile_chat_screen.dart';
 import 'package:messenger_app/info.dart';
 
@@ -19,7 +20,10 @@ class ContactsList extends StatelessWidget {
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => const MobileChatScreen(),
+                        builder: (context) => const MobileChatScreen(
+                          name: 'Donna',
+                          uid: '123456',
+                        ),
                       ),
                     );
                   },

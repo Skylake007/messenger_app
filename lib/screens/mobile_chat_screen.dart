@@ -1,17 +1,26 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
-import 'package:messenger_app/widgets/chat_list.dart';
+
 import 'package:messenger_app/info.dart';
+import 'package:messenger_app/widgets/chat_list.dart';
 import 'package:messenger_app/widgets/colors.dart';
 
 class MobileChatScreen extends StatelessWidget {
-  const MobileChatScreen({super.key});
+  static const routeName = '/mobile-chat-screen';
+  final String name;
+  final String uid;
+  const MobileChatScreen({
+    super.key,
+    required this.name,
+    required this.uid,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: appBarColor,
-        title: Text(messages[0]['name'].toString()),
+        title: Text(name),
         centerTitle: false,
         actions: [
           IconButton(

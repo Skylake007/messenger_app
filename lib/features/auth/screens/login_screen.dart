@@ -65,41 +65,43 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(18),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Text(
-                'Chúng tôi sẽ gửi tin nhắn đến số điện thoại của bạn để xác thực tài khoản.'),
-            const SizedBox(height: 10),
-            TextButton(
-              onPressed: pickCountry,
-              child: const Text('Chọn quốc gia'),
-            ),
-            const SizedBox(height: 5),
-            Row(
-              children: [
-                if (country != null) Text('+${country!.phoneCode}'),
-                const SizedBox(width: 10),
-                SizedBox(
-                  width: size.width * 0.7,
-                  child: TextField(
-                    controller: phoneController,
-                    decoration: const InputDecoration(
-                      hintText: 'nhập số điện thoại',
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Text(
+                  'Chúng tôi sẽ gửi tin nhắn đến số điện thoại của bạn để xác thực tài khoản.'),
+              const SizedBox(height: 10),
+              TextButton(
+                onPressed: pickCountry,
+                child: const Text('Chọn quốc gia'),
+              ),
+              const SizedBox(height: 5),
+              Row(
+                children: [
+                  if (country != null) Text('+${country!.phoneCode}'),
+                  const SizedBox(width: 10),
+                  SizedBox(
+                    width: size.width * 0.7,
+                    child: TextField(
+                      controller: phoneController,
+                      decoration: const InputDecoration(
+                        hintText: 'nhập số điện thoại',
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(height: size.height * 0.58),
-            SizedBox(
-              width: 110,
-              child: CustomButton(
-                onPressed: sendPhoneNumber,
-                text: 'Tiếp tục',
+                ],
               ),
-            ),
-          ],
+              SizedBox(height: size.height * 0.58),
+              SizedBox(
+                width: 110,
+                child: CustomButton(
+                  onPressed: sendPhoneNumber,
+                  text: 'Tiếp tục',
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
