@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_app/models/user_model.dart';
-import 'package:messenger_app/screens/mobile_chat_screen.dart';
+import 'package:messenger_app/features/chat/screens/mobile_chat_screen.dart';
 import 'package:messenger_app/info.dart';
 
 class ContactsList extends StatelessWidget {

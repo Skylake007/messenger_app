@@ -5,7 +5,7 @@ import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:messenger_app/common/utils/utils.dart';
 import 'package:messenger_app/models/user_model.dart';
-import 'package:messenger_app/screens/mobile_chat_screen.dart';
+import 'package:messenger_app/features/chat/screens/mobile_chat_screen.dart';
 
 final selectContactRepositoryProvider = Provider(
   (ref) => SelectContactRepository(
@@ -40,7 +40,7 @@ class SelectContactRepository {
         String selectedPhone =
             selectedContact.phones[0].number.replaceAll('', '');
         String formatPhone = userData.phoneNumber.replaceAll('+84', '');
-        // print('PhoneSelected: $selectedPhone, Cloud Phone: $formatPhone ');
+        print('PhoneSelected: $selectedPhone, Cloud Phone: $formatPhone ');
         if (selectedPhone == formatPhone) {
           isFound = true;
           if (context.mounted) {

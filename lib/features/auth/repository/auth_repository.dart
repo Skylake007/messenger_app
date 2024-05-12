@@ -127,4 +127,12 @@ class AuthRepository {
       }
     }
   }
+
+  userData(String uid) {
+    return firestore.collection('users').doc(uid).snapshots().map(
+          (event) => UserModel.fromMap(
+            event.data()!,
+          ),
+        );
+  }
 }
