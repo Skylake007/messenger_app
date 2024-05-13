@@ -25,6 +25,9 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
             controller.text.trim(),
             widget.recieverUserId,
           );
+      setState(() {
+        controller.text = '';
+      });
     }
   }
 
@@ -40,6 +43,7 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
       children: [
         Expanded(
           child: TextFormField(
+            controller: controller,
             onChanged: (value) {
               if (value.isNotEmpty) {
                 setState(() {

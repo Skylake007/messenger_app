@@ -42,7 +42,7 @@ class ChatRepository {
     );
 
     await firestore
-        .collection('user')
+        .collection('users')
         .doc(recieverUserId)
         .collection('chats')
         .doc(auth.currentUser!.uid)
@@ -60,7 +60,7 @@ class ChatRepository {
     );
 
     await firestore
-        .collection('user')
+        .collection('users')
         .doc(auth.currentUser!.uid)
         .collection('chats')
         .doc(recieverUserId)
@@ -117,7 +117,7 @@ class ChatRepository {
     required String recieverUserId,
     required UserModel senderUser,
   }) async {
-    //user > sender id -> reciever id -> messages id -> store massage
+    //users > sender id -> reciever id -> messages id -> store massage
     try {
       var timeSent = DateTime.now();
       UserModel recieverUserData;
