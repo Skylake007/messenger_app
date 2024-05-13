@@ -1,45 +1,120 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:messenger_app/features/chat/controller/chat_controller.dart';
 import 'package:messenger_app/widgets/colors.dart';
 
-class BottomChatField extends StatelessWidget {
+class BottomChatField extends ConsumerStatefulWidget {
+  final String recieverUserId;
   const BottomChatField({
     super.key,
+    required this.recieverUserId,
   });
 
   @override
+  ConsumerState<BottomChatField> createState() => _BottomChatFieldState();
+}
+
+class _BottomChatFieldState extends ConsumerState<BottomChatField> {
+  final TextEditingController controller = TextEditingController();
+  bool isTyping = false;
+
+  void sendTextMessage() async {
+    if (isTyping) {
+      ref.read(chatControllerProvider).sendTextMessage(
+            context,
+            controller.text.trim(),
+            widget.recieverUserId,
+          );
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    controller.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return TextField(
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: mobileChatBoxColor,
-        prefixIcon: const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20.0),
-          child: Icon(
-            Icons.emoji_emotions,
-            color: Colors.grey,
+    return Row(
+      children: [
+        Expanded(
+          child: TextFormField(
+            onChanged: (value) {
+              if (value.isNotEmpty) {
+                setState(() {
+                  isTyping = true;
+                });
+              } else {
+                setState(() {
+                  isTyping = false;
+                });
+              }
+            },
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: mobileChatBoxColor,
+              prefixIcon: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: SizedBox(
+                  width: 100,
+                  child: Row(
+                    children: [
+                      IconButton(
+                          onPressed: () {},
+                          icon: const Icon(Icons.emoji_emotions,
+                              color: Colors.grey)),
+                      IconButton(
+                        onPressed: () {},
+                        icon: const Icon(Icons.gif),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              suffixIcon: SizedBox(
+                width: 100,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                        onPressed: () {},
+                        icon: const Icon(Icons.camera_alt, color: Colors.grey)),
+                    IconButton(
+                        onPressed: () {},
+                        icon:
+                            const Icon(Icons.attach_file, color: Colors.grey)),
+                  ],
+                ),
+              ),
+              hintText: 'Nhập tin nhắn',
+              hintStyle: const TextStyle(color: greyColor, fontSize: 16),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20.0),
+                borderSide: const BorderSide(
+                  width: 0,
+                  style: BorderStyle.none,
+                ),
+              ),
+              contentPadding: const EdgeInsets.all(10.0),
+            ),
           ),
         ),
-        suffixIcon: const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Icon(Icons.camera_alt, color: Colors.grey),
-              Icon(Icons.attach_file, color: Colors.grey),
-              Icon(Icons.money, color: Colors.grey),
-            ],
+        Padding(
+          padding: const EdgeInsets.only(bottom: 8.0, right: 2, left: 2),
+          child: CircleAvatar(
+            backgroundColor: const Color(0xFF128C7E),
+            radius: 25,
+            child: GestureDetector(
+              child: Icon(isTyping ? Icons.send : Icons.mic),
+              onTap: () => sendTextMessage(),
+              onLongPress: () {
+                // record
+              },
+            ),
           ),
-        ),
-        hintText: 'Nhập tin nhắn!',
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20.0),
-          borderSide: const BorderSide(
-            width: 0,
-            style: BorderStyle.none,
-          ),
-        ),
-        contentPadding: const EdgeInsets.all(10.0),
-      ),
+        )
+      ],
     );
   }
 }
