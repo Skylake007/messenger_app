@@ -4,7 +4,7 @@ import 'package:messenger_app/common/loader.dart';
 import 'package:messenger_app/features/auth/controller/auth_controller.dart';
 import 'package:messenger_app/features/chat/widgets/bottom_chat_field.dart';
 import 'package:messenger_app/models/user_model.dart';
-import 'package:messenger_app/widgets/chat_list.dart';
+import 'package:messenger_app/features/chat/widgets/chat_list.dart';
 import 'package:messenger_app/widgets/colors.dart';
 
 class MobileChatScreen extends ConsumerWidget {
@@ -61,7 +61,9 @@ class MobileChatScreen extends ConsumerWidget {
       body: Column(
         children: [
           Expanded(
-            child: ChatList(),
+            child: ChatList(
+              recieverUserId: uid,
+            ),
           ),
           BottomChatField(
             recieverUserId: uid,
