@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -20,9 +22,30 @@
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>app-1-662921758138-ios-d7e0e57852246a16cc0983</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Cho phép chúng tôi sử dụng camera của bạn.</string>
+	<key>NSContactsUsageDescription</key>
+	<string>Cho phép chúng tôi truy cập danh bạ của bạn.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Cho phép chúng tôi sử dụng microphone của bạn.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Cho phép chúng tôi truy cập thư viện để cập nhật ảnh.</string>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
@@ -41,17 +64,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<true/>
-	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Cho phép chúng tôi truy cập thư viện để cập nhật ảnh.</string>
-	<key>NSCameraUsageDescription</key>
-	<string>Cho phép chúng tôi sử dụng camera của bạn.</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Cho phép chúng tôi sử dụng microphone của bạn.</string>
-	<key>NSContactsUsageDescription</key>
-    <string>Cho phép chúng tôi truy cập danh bạ của bạn.</string>
 </dict>
 </plist>

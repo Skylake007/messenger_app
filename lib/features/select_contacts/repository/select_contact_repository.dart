@@ -38,10 +38,10 @@ class SelectContactRepository {
       for (var document in userCollection.docs) {
         var userData = UserModel.fromMap(document.data());
         String selectedPhone =
-            selectedContact.phones[0].number.replaceAll('', '');
-        String formatPhone = userData.phoneNumber.replaceAll('+84', '');
+            selectedContact.phones[0].number.replaceAll(' ', '').trim();
+        String formatPhone = userData.phoneNumber.replaceAll('+84', '0').trim();
         print('PhoneSelected: $selectedPhone, Cloud Phone: $formatPhone ');
-        if (selectedPhone == '0$formatPhone') {
+        if (selectedPhone == '$formatPhone') {
           isFound = true;
           if (context.mounted) {
             Navigator.pushNamed(context, MobileChatScreen.routeName,
