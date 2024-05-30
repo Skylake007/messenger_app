@@ -40,6 +40,7 @@ class SelectContactRepository {
         String selectedPhone =
             selectedContact.phones[0].number.replaceAll(' ', '').trim();
         String formatPhone = userData.phoneNumber.replaceAll('+84', '0').trim();
+        // ignore: avoid_print
         print('PhoneSelected: $selectedPhone, Cloud Phone: $formatPhone ');
         if (selectedPhone == '$formatPhone') {
           isFound = true;

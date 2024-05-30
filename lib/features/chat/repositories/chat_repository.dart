@@ -61,6 +61,7 @@ class ChatRepository {
         .collection('chats')
         .doc(receiverUserId)
         .collection('messages')
+        .orderBy('timeSent')
         .snapshots()
         .map((event) {
       List<Message> message = [];
