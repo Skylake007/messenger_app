@@ -6,8 +6,8 @@ import 'package:intl/intl.dart';
 import 'package:messenger_app/common/loader.dart';
 import 'package:messenger_app/features/chat/controller/chat_controller.dart';
 import 'package:messenger_app/models/message.dart';
-import 'package:messenger_app/widgets/my_message_card.dart';
-import 'package:messenger_app/widgets/sender_message_card.dart';
+import 'package:messenger_app/features/chat/widgets/my_message_card.dart';
+import 'package:messenger_app/features/chat/widgets/sender_message_card.dart';
 
 class ChatList extends ConsumerStatefulWidget {
   final String recieverUserId;
@@ -56,11 +56,13 @@ class _ChatListState extends ConsumerState<ChatList> {
                   return MyMessageCard(
                     message: messageData.text,
                     date: timeSent,
+                    type: messageData.type,
                   );
                 }
                 return SenderMessageCard(
                   message: messageData.text,
                   date: timeSent,
+                  type: messageData.type,
                 );
               });
         });

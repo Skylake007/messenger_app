@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:messenger_app/common/enums/message_enum.dart';
+import 'package:messenger_app/common/repositories/common_firebase_storage_repository.dart';
 import 'package:messenger_app/common/utils/utils.dart';
 import 'package:messenger_app/models/chat_contact.dart';
 import 'package:messenger_app/models/message.dart';
@@ -190,6 +193,67 @@ class ChatRepository {
         recieverUsername: recieverUserData.name,
         messageType: MessageEnum.text,
       );
+    } catch (e) {
+      if (context.mounted) {
+        showSnackBar(context: context, content: e.toString());
+      }
+    }
+  }
+
+  sendFileMessage({
+    required BuildContext context,
+    required File file,
+    required String recieverUserId,
+    required UserModel senderUserData,
+    required ProviderRef ref,
+    required MessageEnum messageEnum,
+  }) async {
+    try {
+      var timeSent = DateTime.now();
+      var messageId = const Uuid().v1();
+
+      String imageUrl = await ref
+          .read(commonFirebaseStorageRepositoryProvider)
+          .storeFileToFirebase(
+              'chat/${messageEnum.type}/${senderUserData.uid}/$recieverUserId/$messageId',
+              file);
+      UserModel recieverUserData;
+      var userDataMap =
+          await firestore.collection('users').doc(recieverUserId).get();
+      recieverUserData = UserModel.fromMap(userDataMap.data()!);
+      String contactMgs;
+      switch (messageEnum) {
+        case MessageEnum.image:
+          contactMgs = 'Hình ảnh';
+          break;
+        case MessageEnum.video:
+          contactMgs = 'Video';
+          break;
+        case MessageEnum.audio:
+          contactMgs = 'Âm thanh';
+          break;
+        case MessageEnum.gif:
+          contactMgs = 'Gif';
+          break;
+        default:
+          contactMgs = 'Tin nhắn';
+          break;
+      }
+      _saveDataToContactSubCollection(
+        senderUserData,
+        recieverUserData,
+        contactMgs,
+        timeSent,
+        recieverUserId,
+      );
+      _saveMessageToMessageSubCollection(
+          recieverUserId: recieverUserId,
+          text: imageUrl,
+          timeSent: timeSent,
+          messageId: messageId,
+          senderUsername: senderUserData.name,
+          recieverUsername: recieverUserData.name,
+          messageType: messageEnum);
     } catch (e) {
       if (context.mounted) {
         showSnackBar(context: context, content: e.toString());

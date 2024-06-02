@@ -53,14 +53,30 @@ class ContactsList extends ConsumerWidget {
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 8),
                       child: ListTile(
-                        title: Text(
-                          chatContactData.name,
-                          style: const TextStyle(fontSize: 15),
-                        ),
+                        title: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                chatContactData.name,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(fontSize: 15),
+                              ),
+                              Text(
+                                DateFormat.Hm()
+                                    .format(chatContactData.timeSent),
+                                style: const TextStyle(
+                                  color: greyColor,
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ]),
                         subtitle: Padding(
                           padding: const EdgeInsets.only(top: 6),
                           child: Text(
                             chatContactData.lastMessage,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                             style: const TextStyle(fontSize: 15),
                           ),
                         ),
@@ -69,13 +85,6 @@ class ContactsList extends ConsumerWidget {
                             chatContactData.profilePic,
                           ),
                           radius: 30,
-                        ),
-                        trailing: Text(
-                          DateFormat.Hm().format(chatContactData.timeSent),
-                          style: const TextStyle(
-                            color: greyColor,
-                            fontSize: 13,
-                          ),
                         ),
                       ),
                     ),

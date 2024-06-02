@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:messenger_app/common/enums/message_enum.dart';
 import 'package:messenger_app/features/auth/controller/auth_controller.dart';
 import 'package:messenger_app/features/chat/repositories/chat_repository.dart';
 import 'package:messenger_app/models/chat_contact.dart';
@@ -42,6 +45,24 @@ class ChatController {
             text: text,
             recieverUserId: recieverUserId,
             senderUser: data!,
+          ),
+        );
+  }
+
+  void sendFileMessage(
+    BuildContext context,
+    File file,
+    String recieverUserId,
+    MessageEnum type,
+  ) {
+    ref.read(userDataAuthProvider).whenData(
+          (data) => chatRepository.sendFileMessage(
+            context: context,
+            file: file,
+            recieverUserId: recieverUserId,
+            senderUserData: data!,
+            messageEnum: type,
+            ref: ref,
           ),
         );
   }
