@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:messenger_app/common/enums/message_enum.dart';
@@ -19,18 +19,20 @@ class BottomChatField extends ConsumerStatefulWidget {
 }
 
 class _BottomChatFieldState extends ConsumerState<BottomChatField> {
-  final TextEditingController controller = TextEditingController();
-  bool isTyping = false;
+  final TextEditingController _messageController = TextEditingController();
+  bool isShowEmojiContainer = false;
+  bool isShowSendButton = false;
+  FocusNode focusNode = FocusNode();
 
   void sendTextMessage() async {
-    if (isTyping) {
+    if (isShowSendButton) {
       ref.read(chatControllerProvider).sendTextMessage(
             context,
-            controller.text.trim(),
+            _messageController.text.trim(),
             widget.recieverUserId,
           );
       setState(() {
-        controller.text = '';
+        _messageController.text = '';
       });
     }
   }
@@ -61,93 +63,152 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
     }
   }
 
+  void selectGif() async {
+    final giphy = await pickGIF(context);
+    if (!mounted) return;
+    if (giphy != null) {
+      ref
+          .read(chatControllerProvider)
+          .sendTextMessage(context, giphy.url, widget.recieverUserId);
+    }
+  }
+
+  void hideEmojiContainer() {
+    setState(() {
+      isShowEmojiContainer = false;
+    });
+  }
+
+  void showEmojiContainer() {
+    setState(() {
+      isShowEmojiContainer = true;
+    });
+  }
+
+  void toggleEmojiKeyboardContainer() {
+    if (isShowEmojiContainer) {
+      showKeyboard();
+      hideEmojiContainer();
+    } else {
+      hideKeyboard();
+      showEmojiContainer();
+    }
+  }
+
+  void showKeyboard() => focusNode.requestFocus();
+  void hideKeyboard() => focusNode.unfocus();
+
   @override
   void dispose() {
     super.dispose();
-    controller.dispose();
+    _messageController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
       children: [
-        Expanded(
-          child: TextFormField(
-            controller: controller,
-            onChanged: (value) {
-              if (value.isNotEmpty) {
-                setState(() {
-                  isTyping = true;
-                });
-              } else {
-                setState(() {
-                  isTyping = false;
-                });
-              }
-            },
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: mobileChatBoxColor,
-              prefixIcon: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: SizedBox(
-                  width: 100,
-                  child: Row(
-                    children: [
-                      IconButton(
-                          onPressed: () {},
-                          icon: const Icon(Icons.emoji_emotions,
-                              color: Colors.grey)),
-                      IconButton(
-                        onPressed: () {},
-                        icon: const Icon(Icons.gif),
+        Row(
+          children: [
+            Expanded(
+              child: TextFormField(
+                focusNode: focusNode,
+                controller: _messageController,
+                onChanged: (value) {
+                  if (value.isNotEmpty) {
+                    setState(() {
+                      isShowSendButton = true;
+                    });
+                  } else {
+                    setState(() {
+                      isShowSendButton = false;
+                    });
+                  }
+                },
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: mobileChatBoxColor,
+                  prefixIcon: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: SizedBox(
+                      width: 100,
+                      child: Row(
+                        children: [
+                          IconButton(
+                              onPressed: toggleEmojiKeyboardContainer,
+                              icon: const Icon(Icons.emoji_emotions,
+                                  color: Colors.grey)),
+                          IconButton(
+                            onPressed: selectGif,
+                            icon: const Icon(Icons.gif),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
+                  suffixIcon: SizedBox(
+                    width: 100,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        IconButton(
+                            onPressed: selectImage,
+                            icon: const Icon(Icons.camera_alt,
+                                color: Colors.grey)),
+                        IconButton(
+                            onPressed: selectVideo,
+                            icon: const Icon(Icons.attach_file,
+                                color: Colors.grey)),
+                      ],
+                    ),
+                  ),
+                  hintText: 'Nhập tin nhắn',
+                  hintStyle: const TextStyle(color: greyColor, fontSize: 16),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                    borderSide: const BorderSide(
+                      width: 0,
+                      style: BorderStyle.none,
+                    ),
+                  ),
+                  contentPadding: const EdgeInsets.all(10.0),
                 ),
               ),
-              suffixIcon: SizedBox(
-                width: 100,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    IconButton(
-                        onPressed: selectImage,
-                        icon: const Icon(Icons.camera_alt, color: Colors.grey)),
-                    IconButton(
-                        onPressed: selectVideo,
-                        icon:
-                            const Icon(Icons.attach_file, color: Colors.grey)),
-                  ],
-                ),
-              ),
-              hintText: 'Nhập tin nhắn',
-              hintStyle: const TextStyle(color: greyColor, fontSize: 16),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20.0),
-                borderSide: const BorderSide(
-                  width: 0,
-                  style: BorderStyle.none,
-                ),
-              ),
-              contentPadding: const EdgeInsets.all(10.0),
             ),
-          ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8.0, right: 2, left: 2),
+              child: CircleAvatar(
+                backgroundColor: const Color(0xFF128C7E),
+                radius: 25,
+                child: GestureDetector(
+                  child: Icon(isShowSendButton ? Icons.send : Icons.mic),
+                  onTap: () => sendTextMessage(),
+                  onLongPress: () {
+                    // record
+                  },
+                ),
+              ),
+            ),
+          ],
         ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 8.0, right: 2, left: 2),
-          child: CircleAvatar(
-            backgroundColor: const Color(0xFF128C7E),
-            radius: 25,
-            child: GestureDetector(
-              child: Icon(isTyping ? Icons.send : Icons.mic),
-              onTap: () => sendTextMessage(),
-              onLongPress: () {
-                // record
-              },
-            ),
-          ),
-        )
+        isShowEmojiContainer
+            ? SizedBox(
+                height: 310,
+                child: EmojiPicker(
+                  onEmojiSelected: (category, emoji) {
+                    setState(() {
+                      _messageController.text =
+                          _messageController.text + emoji.emoji;
+                    });
+                    if (!isShowSendButton) {
+                      setState(() {
+                        isShowSendButton = true;
+                      });
+                    }
+                  },
+                ),
+              )
+            : const SizedBox(),
       ],
     );
   }
