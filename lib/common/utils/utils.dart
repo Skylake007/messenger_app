@@ -45,12 +45,13 @@ Future<File?> pickVideoFromGallery(BuildContext context) async {
 }
 
 Future<GiphyGif?> pickGIF(BuildContext context) async {
-  //BdqJmON2ReLsV9S3XinOJ9gEmMsvO3NJ
+  //iOS: BdqJmON2ReLsV9S3XinOJ9gEmMsvO3NJ
+  //Android: 3xlJptg1D7exs4KhWPZRpTuqgdTZ0ohQ
   GiphyGif? gif;
   try {
     gif = await Giphy.getGif(
       context: context,
-      apiKey: '3xlJots1D7exs4KhWPZRpTuqgdTZ0ohQ',
+      apiKey: 'BdqJmON2ReLsV9S3XinOJ9gEmMsvO3NJ',
     );
   } catch (e) {
     if (context.mounted) {

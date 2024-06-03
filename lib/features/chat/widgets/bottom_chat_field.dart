@@ -69,7 +69,7 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
     if (giphy != null) {
       ref
           .read(chatControllerProvider)
-          .sendTextMessage(context, giphy.url, widget.recieverUserId);
+          .sendGifMessage(context, giphy.url, widget.recieverUserId);
     }
   }
 

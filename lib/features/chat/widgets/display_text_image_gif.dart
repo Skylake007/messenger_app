@@ -22,7 +22,7 @@ class DisplayTextImageGif extends StatelessWidget {
             ),
           )
         : type == MessageEnum.video
-            ? VideoPlayerItem(videoUrl: '$message.gif')
+            ? VideoPlayerItem(videoUrl: message)
             : type == MessageEnum.gif
                 ? CachedNetworkImage(imageUrl: message)
                 : CachedNetworkImage(imageUrl: message);
