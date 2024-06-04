@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:messenger_app/common/enums/message_enum.dart';
+import 'package:messenger_app/common/providers/message_reply_provider.dart';
 import 'package:messenger_app/common/repositories/common_firebase_storage_repository.dart';
 import 'package:messenger_app/common/utils/utils.dart';
 import 'package:messenger_app/models/chat_contact.dart';
@@ -124,9 +125,12 @@ class ChatRepository {
     required String text,
     required DateTime timeSent,
     required String messageId,
-    required String senderUsername,
-    required String recieverUsername,
+    required String userName,
+    required recieverUsername,
     required MessageEnum messageType,
+    required MessageReply? messageReply,
+    required String senderUsername,
+    required String recieverUserName,
   }) async {
     final message = Message(
       senderId: auth.currentUser!.uid,
@@ -136,6 +140,14 @@ class ChatRepository {
       timeSent: timeSent,
       messageId: messageId,
       isSeen: false,
+      repliedMessage: messageReply == null ? '' : messageReply.message,
+      repliedTo: messageReply == null
+          ? ''
+          : messageReply.isMe
+              ? senderUsername
+              : recieverUserName,
+      repliedMessageType:
+          messageReply == null ? MessageEnum.text : messageReply.messageEnum,
     );
 
     await firestore
@@ -166,6 +178,7 @@ class ChatRepository {
     required String text,
     required String recieverUserId,
     required UserModel senderUser,
+    required MessageReply? messageReply,
   }) async {
     //users > sender id -> reciever id -> messages id -> store massage
     try {
@@ -188,10 +201,13 @@ class ChatRepository {
         recieverUserId: recieverUserId,
         text: text,
         timeSent: timeSent,
-        messageId: messageId,
-        senderUsername: senderUser.name,
-        recieverUsername: recieverUserData.name,
         messageType: MessageEnum.text,
+        messageId: messageId,
+        recieverUsername: recieverUserData.name,
+        userName: senderUser.name,
+        messageReply: messageReply,
+        recieverUserName: recieverUserData.name,
+        senderUsername: senderUser.name,
       );
     } catch (e) {
       if (context.mounted) {
@@ -207,6 +223,7 @@ class ChatRepository {
     required UserModel senderUserData,
     required ProviderRef ref,
     required MessageEnum messageEnum,
+    required MessageReply? messageReply,
   }) async {
     try {
       var timeSent = DateTime.now();
@@ -247,13 +264,17 @@ class ChatRepository {
         recieverUserId,
       );
       _saveMessageToMessageSubCollection(
-          recieverUserId: recieverUserId,
-          text: imageUrl,
-          timeSent: timeSent,
-          messageId: messageId,
-          senderUsername: senderUserData.name,
-          recieverUsername: recieverUserData.name,
-          messageType: messageEnum);
+        recieverUserId: recieverUserId,
+        text: imageUrl,
+        timeSent: timeSent,
+        messageId: messageId,
+        userName: senderUserData.name,
+        recieverUsername: recieverUserData.name,
+        messageType: messageEnum,
+        messageReply: messageReply,
+        recieverUserName: recieverUserData.name,
+        senderUsername: senderUserData.name,
+      );
     } catch (e) {
       if (context.mounted) {
         showSnackBar(context: context, content: e.toString());
@@ -266,8 +287,8 @@ class ChatRepository {
     required String gifUrl,
     required String recieverUserId,
     required UserModel senderUser,
+    required MessageReply? messageReply,
   }) async {
-    //users > sender id -> reciever id -> messages id -> store massage
     try {
       var timeSent = DateTime.now();
       UserModel recieverUserData;
@@ -278,7 +299,7 @@ class ChatRepository {
       _saveDataToContactSubCollection(
         senderUser,
         recieverUserData,
-        gifUrl,
+        'GIF',
         timeSent,
         recieverUserId,
       );
@@ -288,10 +309,13 @@ class ChatRepository {
         recieverUserId: recieverUserId,
         text: gifUrl,
         timeSent: timeSent,
-        messageId: messageId,
-        senderUsername: senderUser.name,
-        recieverUsername: recieverUserData.name,
         messageType: MessageEnum.gif,
+        messageId: messageId,
+        userName: senderUser.name,
+        recieverUsername: recieverUserData.name,
+        messageReply: messageReply,
+        recieverUserName: recieverUserData.name,
+        senderUsername: senderUser.name,
       );
     } catch (e) {
       if (context.mounted) {

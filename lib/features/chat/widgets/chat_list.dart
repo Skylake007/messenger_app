@@ -2,7 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:messenger_app/common/enums/message_enum.dart';
 import 'package:messenger_app/common/loader.dart';
+import 'package:messenger_app/common/providers/message_reply_provider.dart';
 import 'package:messenger_app/features/chat/controller/chat_controller.dart';
 import 'package:messenger_app/models/message.dart';
 import 'package:messenger_app/features/chat/widgets/my_message_card.dart';
@@ -26,6 +28,20 @@ class _ChatListState extends ConsumerState<ChatList> {
   void dispose() {
     super.dispose();
     scrollController.dispose();
+  }
+
+  void onMessageSwipe(
+    String message,
+    bool isMe,
+    MessageEnum messageEnum,
+  ) {
+    ref.read(messageReplyProvider.notifier).update(
+          (state) => MessageReply(
+            isMe: isMe,
+            message: message,
+            messageEnum: messageEnum,
+          ),
+        );
   }
 
   @override
@@ -56,6 +72,14 @@ class _ChatListState extends ConsumerState<ChatList> {
                     message: messageData.text,
                     date: timeSent,
                     type: messageData.type,
+                    repliedText: messageData.repliedMessage,
+                    username: messageData.repliedTo,
+                    repliedMessageType: messageData.repliedMessageType,
+                    onLeftSwipeCallBack: () => onMessageSwipe(
+                      messageData.text,
+                      true,
+                      messageData.type,
+                    ),
                   );
                 }
                 return SenderMessageCard(

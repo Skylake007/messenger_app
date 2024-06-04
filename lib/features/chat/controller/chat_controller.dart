@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:messenger_app/common/enums/message_enum.dart';
+import 'package:messenger_app/common/providers/message_reply_provider.dart';
 import 'package:messenger_app/features/auth/controller/auth_controller.dart';
 import 'package:messenger_app/features/chat/repositories/chat_repository.dart';
 import 'package:messenger_app/models/chat_contact.dart';
@@ -39,13 +40,14 @@ class ChatController {
     String text,
     String recieverUserId,
   ) {
+    final messageReply = ref.read(messageReplyProvider);
     ref.read(userDataAuthProvider).whenData(
           (data) => chatRepository.sentTextMessage(
-            context: context,
-            text: text,
-            recieverUserId: recieverUserId,
-            senderUser: data!,
-          ),
+              context: context,
+              text: text,
+              recieverUserId: recieverUserId,
+              senderUser: data!,
+              messageReply: messageReply),
         );
   }
 
@@ -55,6 +57,8 @@ class ChatController {
     String recieverUserId,
     MessageEnum type,
   ) {
+    final messageReply = ref.read(messageReplyProvider);
+
     ref.read(userDataAuthProvider).whenData(
           (data) => chatRepository.sendFileMessage(
             context: context,
@@ -63,6 +67,7 @@ class ChatController {
             senderUserData: data!,
             messageEnum: type,
             ref: ref,
+            messageReply: messageReply,
           ),
         );
   }
@@ -75,13 +80,15 @@ class ChatController {
     int gifUrlPartIndex = gifUrl.lastIndexOf('-') + 1;
     String gifUrlPart = gifUrl.substring(gifUrlPartIndex);
     String newGifUrl = 'https://i.giphy.com/media/$gifUrlPart/200.gif';
-    print('new gifUrl: $newGifUrl');
+    final messageReply = ref.read(messageReplyProvider);
+
     ref.read(userDataAuthProvider).whenData(
           (value) => chatRepository.sentGifMessage(
             context: context,
             gifUrl: newGifUrl,
             recieverUserId: recieverUserId,
             senderUser: value!,
+            messageReply: messageReply,
           ),
         );
   }
