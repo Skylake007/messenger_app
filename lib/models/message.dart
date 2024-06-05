@@ -43,15 +43,15 @@ class Message {
 
   factory Message.fromMap(Map<String, dynamic> map) {
     return Message(
-      senderId: map['senderId'] as String,
-      recieverId: map['recieverId'] as String,
-      text: map['text'] as String,
+      senderId: map['senderId'] ?? '',
+      recieverId: map['recieverId'] ?? '',
+      text: map['text'] ?? '',
       type: (map['type'] as String).toEnum(),
-      timeSent: DateTime.fromMillisecondsSinceEpoch(map['timeSent'] as int),
-      messageId: map['messageId'] as String,
-      isSeen: map['isSeen'] as bool,
-      repliedMessage: map['repliedMessage'] as String,
-      repliedTo: map['repliedTo'] as String,
+      timeSent: DateTime.fromMillisecondsSinceEpoch(map['timeSent']),
+      messageId: map['messageId'] ?? '',
+      isSeen: map['isSeen'] ?? false,
+      repliedMessage: map['repliedMessage'] ?? '',
+      repliedTo: map['repliedTo'] ?? '',
       repliedMessageType: (map['repliedMessageType'] as String).toEnum(),
     );
   }

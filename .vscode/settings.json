@@ -3,5 +3,7 @@
         "Tuqgd"
     ],
     
-    "editor.codeActionsOnSave": { "source.fixAll": true}
+    "editor.codeActionsOnSave": {
+        "source.fixAll": "explicit"
+    }
 }

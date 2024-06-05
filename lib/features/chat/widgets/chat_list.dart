@@ -35,6 +35,7 @@ class _ChatListState extends ConsumerState<ChatList> {
     bool isMe,
     MessageEnum messageEnum,
   ) {
+    print('Update swipe state');
     ref.read(messageReplyProvider.notifier).update(
           (state) => MessageReply(
             isMe: isMe,

@@ -36,7 +36,7 @@ class MessageReplyReview extends ConsumerWidget {
                   Icons.close,
                   size: 14,
                 ),
-                onTap: () {},
+                onTap: () => cancelReply(ref),
               )
             ],
           ),
