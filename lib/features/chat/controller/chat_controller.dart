@@ -70,6 +70,7 @@ class ChatController {
             messageReply: messageReply,
           ),
         );
+    ref.read(messageReplyProvider.notifier).update((state) => null);
   }
 
   void sendGifMessage(

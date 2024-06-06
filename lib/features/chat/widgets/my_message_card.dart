@@ -1,6 +1,4 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
-
 import 'package:messenger_app/common/enums/message_enum.dart';
 import 'package:messenger_app/features/chat/widgets/display_text_image_gif.dart';
 import 'package:messenger_app/widgets/colors.dart';
@@ -32,6 +30,8 @@ class MyMessageCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isReplying = repliedText.isNotEmpty;
+
     return SwipeTo(
       onLeftSwipe: onLeftSwipe,
       child: Align(
@@ -63,9 +63,39 @@ class MyMessageCard extends StatelessWidget {
                           right: 5,
                           bottom: 20,
                         ),
-                  child: DisplayTextImageGif(
-                    message: message,
-                    type: type,
+                  child: Column(
+                    children: [
+                      if (isReplying) ...[
+                        //bung rộng
+                        Text(
+                          username,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: backgroundColor.withOpacity(0.3),
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(
+                                5,
+                              ),
+                            ),
+                          ),
+                          child: DisplayTextImageGif(
+                            message: repliedText,
+                            type: repliedMessageType,
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+                      ],
+                      DisplayTextImageGif(
+                        message: message,
+                        type: type,
+                      ),
+                    ],
                   ),
                 ),
                 Positioned(

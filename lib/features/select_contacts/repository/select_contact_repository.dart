@@ -42,7 +42,7 @@ class SelectContactRepository {
         String formatPhone = userData.phoneNumber.replaceAll('+84', '0').trim();
         // ignore: avoid_print
         print('PhoneSelected: $selectedPhone, Cloud Phone: $formatPhone ');
-        if (selectedPhone == '$formatPhone') {
+        if (selectedPhone == formatPhone) {
           isFound = true;
           if (context.mounted) {
             Navigator.pushNamed(context, MobileChatScreen.routeName,
