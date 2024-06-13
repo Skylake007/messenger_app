@@ -4,7 +4,7 @@ import 'package:messenger_app/features/chat/widgets/display_text_image_gif.dart'
 import 'package:messenger_app/widgets/colors.dart';
 import 'package:swipe_to/swipe_to.dart';
 
-class SenderMessageCard extends StatelessWidget {
+class SenderMessageCard extends StatefulWidget {
   final String message;
   final String date;
   final MessageEnum type;
@@ -12,6 +12,7 @@ class SenderMessageCard extends StatelessWidget {
   final String repliedText;
   final String username;
   final MessageEnum repliedMessageType;
+  final bool isSeen;
   const SenderMessageCard({
     super.key,
     required this.message,
@@ -21,96 +22,127 @@ class SenderMessageCard extends StatelessWidget {
     required this.onRightSwipeCallBack,
     required this.username,
     required this.repliedMessageType,
+    required this.isSeen,
   });
 
+  @override
+  State<SenderMessageCard> createState() => _SenderMessageCardState();
+}
+
+class _SenderMessageCardState extends State<SenderMessageCard> {
+  bool _isShowStatus = false;
+
   void onRightSwipe(DragUpdateDetails details) {
-    onRightSwipeCallBack();
+    widget.onRightSwipeCallBack();
+  }
+
+  void onClickItem() {
+    setState(() {
+      if (widget.type == MessageEnum.text) {
+        _isShowStatus = !_isShowStatus;
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final isReplying = repliedText.isNotEmpty;
-
+    final isReplying = widget.repliedText.isNotEmpty;
     return SwipeTo(
       onRightSwipe: onRightSwipe,
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            maxWidth: MediaQuery.of(context).size.width - 45,
-          ),
-          child: Card(
-            elevation: 1,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            color: messageColor,
-            margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-            child: Stack(
-              children: [
-                Padding(
-                  padding: type == MessageEnum.text
-                      ? const EdgeInsets.only(
-                          left: 10,
-                          right: 30,
-                          top: 5,
-                          bottom: 25,
-                        )
-                      : const EdgeInsets.only(
-                          top: 5,
-                          left: 5,
-                          right: 5,
-                          bottom: 25,
-                        ),
-                  child: Column(
+      child: GestureDetector(
+        onTap: onClickItem,
+        child: Column(
+          children: [
+            if (_isShowStatus && widget.type == MessageEnum.text)
+              Text(
+                widget.date,
+                style: const TextStyle(
+                  color: greyColor,
+                  fontSize: 12,
+                ),
+              ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width - 45,
+                ),
+                child: Card(
+                  elevation: 1,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  color: messageColor,
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                  child: Stack(
                     children: [
-                      if (isReplying) ...[
-                        //bung rộng
-                        Text(
-                          username,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 3),
-                        Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: backgroundColor.withOpacity(0.3),
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(
-                                5,
+                      Padding(
+                        padding: widget.type == MessageEnum.text
+                            ? const EdgeInsets.only(
+                                top: 8,
+                                bottom: 8,
+                                left: 10,
+                                right: 10,
+                              )
+                            : const EdgeInsets.all(2),
+                        child: Column(
+                          children: [
+                            if (isReplying) ...[
+                              //bung rộng
+                              Text(
+                                widget.username,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
+                              const SizedBox(height: 3),
+                              Container(
+                                padding: const EdgeInsets.all(2),
+                                decoration: BoxDecoration(
+                                  color: backgroundColor.withOpacity(0.3),
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(12),
+                                  ),
+                                ),
+                                child: DisplayTextImageGif(
+                                  message: widget.repliedText,
+                                  type: widget.repliedMessageType,
+                                ),
+                              ),
+                              const SizedBox(height: 3),
+                            ],
+                            DisplayTextImageGif(
+                              message: widget.message,
+                              type: widget.type,
                             ),
-                          ),
-                          child: DisplayTextImageGif(
-                            message: repliedText,
-                            type: repliedMessageType,
-                          ),
+                          ],
                         ),
-                        const SizedBox(height: 3),
-                      ],
-                      DisplayTextImageGif(
-                        message: message,
-                        type: type,
                       ),
                     ],
                   ),
                 ),
-                Positioned(
-                  left: 15,
-                  bottom: 2,
+              ),
+            ),
+            if (_isShowStatus && widget.type == MessageEnum.text)
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    left: 15,
+                    top: 5,
+                    bottom: 5,
+                  ),
                   child: Text(
-                    date,
-                    style: const TextStyle(
+                    'Đã xem',
+                    style: TextStyle(
                       fontSize: 12,
                       color: greyColor,
                     ),
                   ),
                 ),
-              ],
-            ),
-          ),
+              ),
+          ],
         ),
       ),
     );

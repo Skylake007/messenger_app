@@ -51,7 +51,9 @@ class Message {
       isSeen: map['isSeen'] ?? false,
       repliedMessage: map['repliedMessage'] ?? '',
       repliedTo: map['repliedTo'] ?? '',
-      repliedMessageType: (map['repliedMessageType'] as String).toEnum(),
+      repliedMessageType: (map['repliedMessageType'] != null
+          ? (map['repliedMessageType'] as String).toEnum()
+          : MessageEnum.text),
     );
   }
 }
